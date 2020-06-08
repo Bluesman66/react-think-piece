@@ -15,7 +15,6 @@ const AddPost = (props) => {
 		const { title, content } = state;
 
 		const post = {
-			id: Date.now().toString(),
 			title,
 			content,
 			user: {
