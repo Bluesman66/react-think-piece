@@ -1,61 +1,59 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class AddPost extends Component {
-  state = { title: '', content: '' };
+const AddPost = (props) => {
+	const [state, setState] = useState({ title: '', content: '' });
 
-  handleChange = event => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  };
+	const handleChange = (event) => {
+		const { name, value } = event.target;
+		setState({ ...state, [name]: value });
+	};
 
-  handleSubmit = event => {
-    event.preventDefault();
+	const handleSubmit = (event) => {
+		event.preventDefault();
 
-    const { onCreate } = this.props;
-    const { title, content } = this.state;
+		const { onCreate } = props;
+		const { title, content } = state;
 
-    const post = {
-      id: Date.now().toString(),
-      title,
-      content,
-      user: {
-        uid: '1111',
-        displayName: 'Steve Kinney',
-        email: 'steve@mailinator.com',
-        photoURL: 'http://placekitten.com/g/200/200',
-      },
-      favorites: 0,
-      comments: 0,
-      createdAt: new Date(),
-    }
+		const post = {
+			id: Date.now().toString(),
+			title,
+			content,
+			user: {
+				uid: '1111',
+				displayName: 'Steve Kinney',
+				email: 'steve@mailinator.com',
+				photoURL: 'http://placekitten.com/g/200/200',
+			},
+			favorites: 0,
+			comments: 0,
+			createdAt: new Date(),
+		};
 
-    onCreate(post);
+		onCreate(post);
 
-    this.setState({ title: '', content: '' });
-  };
+		setState({ ...state, title: '', content: '' });
+	};
 
-  render() {
-    const { title, content } = this.state;
-    return (
-      <form onSubmit={this.handleSubmit} className="AddPost">
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={title}
-          onChange={this.handleChange}
-        />
-        <input
-          type="text"
-          name="content"
-          placeholder="Body"
-          value={content}
-          onChange={this.handleChange}
-        />
-        <input className="create" type="submit" value="Create Post" />
-      </form>
-    );
-  }
-}
+	const { title, content } = state;
+	return (
+		<form onSubmit={handleSubmit} className="AddPost">
+			<input
+				type="text"
+				name="title"
+				placeholder="Title"
+				value={title}
+				onChange={handleChange}
+			/>
+			<input
+				type="text"
+				name="content"
+				placeholder="Body"
+				value={content}
+				onChange={handleChange}
+			/>
+			<input className="create" type="submit" value="Create Post" />
+		</form>
+	);
+};
 
 export default AddPost;

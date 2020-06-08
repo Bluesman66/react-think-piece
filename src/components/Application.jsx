@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Posts from './Posts';
 import { firestore } from '../firebase';
 
-class Application extends Component {
-	state = {
+const Application = () => {
+	const initialState = {
 		posts: [
 			{
 				id: '1',
@@ -37,21 +37,31 @@ class Application extends Component {
 		],
 	};
 
-	handleCreate = (post) => {
-		const { posts } = this.state;
-		this.setState({ posts: [post, ...posts] });
+	const [state, setState] = useState(initialState);
+	const { posts } = state;
+
+	useEffect(() => {
+		const posts = firestore
+			.collection('posts')
+			.get()
+			.then((snap) => {
+				console.log(snap);
+			});
+		console.log(posts);
+	}, []);
+
+	const handleCreate = (post) => {
+		setState({ ...state, posts: [post, ...posts] });
 	};
 
-	render() {
-		const { posts } = this.state;
+	//const { posts } = state;
 
-		return (
-			<main className="Application">
-				<h1>Think Piece</h1>
-				<Posts posts={posts} onCreate={this.handleCreate} />
-			</main>
-		);
-	}
-}
+	return (
+		<main className="Application">
+			<h1>Think Piece</h1>
+			<Posts posts={posts} onCreate={handleCreate} />
+		</main>
+	);
+};
 
 export default Application;
