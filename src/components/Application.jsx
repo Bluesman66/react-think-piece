@@ -41,13 +41,15 @@ const Application = () => {
 	const { posts } = state;
 
 	useEffect(() => {
-		const posts = firestore
-			.collection('posts')
-			.get()
-			.then((snap) => {
-				console.log(snap);
+		const getSnapshotAsync = async () => {
+			const snapshot = await firestore.collection('posts').get();
+			snapshot.forEach((doc) => {
+				const id = doc.id;
+				const data = doc.data();
+				console.log({ id, data });
 			});
-		console.log(posts);
+		};
+		getSnapshotAsync();
 	}, []);
 
 	const handleCreate = (post) => {
