@@ -13,12 +13,13 @@ const Application = () => {
 	const { posts } = state;
 
 	useEffect(() => {
-		const getSnapshotAsync = async () => {
-			const snapshot = await firestore.collection('posts').get();
+		const unsubscribe = firestore.collection('posts').onSnapshot((snapshot) => {
 			const posts = snapshot.docs.map(collectIdsAndDocs);
 			setState({ posts });
+		});
+		return () => {
+			unsubscribe();
 		};
-		getSnapshotAsync();
 	}, []);
 
 	const handleCreate = async (post) => {
@@ -29,8 +30,8 @@ const Application = () => {
 	};
 
 	const handleRemove = async (id) => {
-    const postsClone = { ...state };
-    await firestore.doc(`posts/${id}`).delete();
+		const postsClone = { ...state };
+		await firestore.doc(`posts/${id}`).delete();
 		const posts = postsClone.posts.filter((post) => post.id !== id);
 		setState({ ...state, posts });
 	};
