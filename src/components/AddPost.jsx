@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
-const AddPost = (props) => {
+import { firestore } from '../firebase';
+
+const AddPost = () => {
 	const [state, setState] = useState({ title: '', content: '' });
 
 	const handleChange = (event) => {
@@ -11,7 +13,6 @@ const AddPost = (props) => {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		const { onCreate } = props;
 		const { title, content } = state;
 
 		const post = {
@@ -28,7 +29,7 @@ const AddPost = (props) => {
 			createdAt: new Date(),
 		};
 
-		onCreate(post);
+		firestore.collection('posts').add(post);
 
 		setState({ ...state, title: '', content: '' });
 	};
