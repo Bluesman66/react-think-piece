@@ -1,45 +1,43 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class SignIn extends Component {
-  state = { email: '', password: '' };
+import { signInWithGoogle } from '../firebase';
 
-  handleChange = event => {
-    const { name, value } = event.target;
+const SignIn = () => {
+	const [state, setState] = useState({ email: '', password: '' });
 
-    this.setState({ [name]: value });
-  };
+	const handleChange = (event) => {
+		const { name, value } = event.target;
+		setState({ ...state, [name]: value });
+	};
 
-  handleSubmit = event => {
-    event.preventDefault();
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		setState({ ...state, email: '', password: '' });
+	};
 
-    this.setState({ email: '', password: '' });
-  };
+	const { email, password } = state;
 
-  render() {
-    const { email, password } = this.state;
-
-    return (
-      <form className="SignIn" onSubmit={this.handleSubmit}>
-        <h2>Sign In</h2>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={email}
-          onChange={this.handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={password}
-          onChange={this.handleChange}
-        />
-        <input type="submit" value="Sign In" />
-        <button>Sign In With Google</button>
-      </form>
-    );
-  }
-}
+	return (
+		<form className="SignIn" onSubmit={handleSubmit}>
+			<h2>Sign In</h2>
+			<input
+				type="email"
+				name="email"
+				placeholder="Email"
+				value={email}
+				onChange={handleChange}
+			/>
+			<input
+				type="password"
+				name="password"
+				placeholder="Password"
+				value={password}
+				onChange={handleChange}
+			/>
+			<input type="submit" value="Sign In" />
+			<button onClick={signInWithGoogle}>Sign In With Google</button>
+		</form>
+	);
+};
 
 export default SignIn;

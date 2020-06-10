@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { auth, firestore } from '../firebase';
 
 import Authentication from './Authentication';
 import Posts from './Posts';
 import { collectIdsAndDocs } from '../utilities';
-import { firestore } from '../firebase';
 
 const Application = () => {
 	const initialState = {
@@ -15,19 +15,25 @@ const Application = () => {
 	const { posts, user } = state;
 
 	useEffect(() => {
-		const unsubscribe = firestore.collection('posts').onSnapshot((snapshot) => {
-			const posts = snapshot.docs.map(collectIdsAndDocs);
-			setState({ posts });
+		const unsubscribeFromFirestore = firestore
+			.collection('posts')
+			.onSnapshot((snapshot) => {
+				const posts = snapshot.docs.map(collectIdsAndDocs);
+				setState({ ...state, posts });
+			});
+		const unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
+			setState({ ...state, user });
 		});
 		return () => {
-			unsubscribe();
+			unsubscribeFromFirestore();
+			unsubscribeFromAuth();
 		};
-	}, []);
+	}, [state]);
 
 	return (
 		<main className="Application">
 			<h1>Think Piece</h1>
-			<Authentication user={user}/>
+			<Authentication user={user} />
 			<Posts posts={posts} />
 		</main>
 	);
