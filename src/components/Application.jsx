@@ -6,29 +6,25 @@ import Posts from './Posts';
 import { collectIdsAndDocs } from '../utilities';
 
 const Application = () => {
-	const initialState = {
-		posts: [],
-		user: null,
-	};
-
-	const [state, setState] = useState(initialState);
-	const { posts, user } = state;
+	const [posts, setPosts] = useState([]);
+	const [user, setUser] = useState(null);
 
 	useEffect(() => {
+		console.log('useEffect');
 		const unsubscribeFromFirestore = firestore
 			.collection('posts')
 			.onSnapshot((snapshot) => {
 				const posts = snapshot.docs.map(collectIdsAndDocs);
-				setState({ ...state, posts });
+				setPosts(posts);
 			});
 		const unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
-			setState({ ...state, user });
+			setUser(user);
 		});
 		return () => {
 			unsubscribeFromFirestore();
 			unsubscribeFromAuth();
 		};
-	}, [state]);
+	}, []);
 
 	return (
 		<main className="Application">

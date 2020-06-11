@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-
-import { firestore } from '../firebase';
+import { auth, firestore } from '../firebase';
 
 const AddPost = () => {
 	const [state, setState] = useState({ title: '', content: '' });
@@ -14,15 +13,16 @@ const AddPost = () => {
 		event.preventDefault();
 
 		const { title, content } = state;
+		const { uid, displayName, email, photoURL } = auth.currentUser || {};
 
 		const post = {
 			title,
 			content,
 			user: {
-				uid: '1111',
-				displayName: 'Steve Kinney',
-				email: 'steve@mailinator.com',
-				photoURL: 'http://placekitten.com/g/200/200',
+				uid,
+				displayName,
+				email,
+				photoURL,
 			},
 			favorites: 0,
 			comments: 0,
@@ -34,21 +34,20 @@ const AddPost = () => {
 		setState({ ...state, title: '', content: '' });
 	};
 
-	const { title, content } = state;
 	return (
 		<form onSubmit={handleSubmit} className="AddPost">
 			<input
 				type="text"
 				name="title"
 				placeholder="Title"
-				value={title}
+				value={state.title}
 				onChange={handleChange}
 			/>
 			<input
 				type="text"
 				name="content"
 				placeholder="Body"
-				value={content}
+				value={state.content}
 				onChange={handleChange}
 			/>
 			<input className="create" type="submit" value="Create Post" />
