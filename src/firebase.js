@@ -36,8 +36,20 @@ export const createUserProfileDocument = async (user, additionalData) => {
 				...additionalData,
 			});
 		} catch (error) {
-			console.error(error);
+			console.error('Error creating user: ', error);
 		}
+	}
+
+	return getUserDocument(user.uid);
+};
+
+export const getUserDocument = async (uid) => {
+	if (!uid) return;
+	try {
+		const userDocument = await firestore.collections('users').doc('uid').get();
+		return { uid, ...userDocument.data() };
+	} catch (error) {
+		console.error(error);
 	}
 };
 
