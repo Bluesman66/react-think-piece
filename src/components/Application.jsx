@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { auth, firestore } from '../firebase';
+import { auth, createUserProfileDocument, firestore } from '../firebase';
 
 import Authentication from './Authentication';
 import Posts from './Posts';
@@ -10,14 +10,14 @@ const Application = () => {
 	const [user, setUser] = useState(null);
 
 	useEffect(() => {
-		console.log('useEffect');
 		const unsubscribeFromFirestore = firestore
 			.collection('posts')
 			.onSnapshot((snapshot) => {
 				const posts = snapshot.docs.map(collectIdsAndDocs);
 				setPosts(posts);
 			});
-		const unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
+		const unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+			const user = await createUserProfileDocument(userAuth);
 			setUser(user);
 		});
 		return () => {

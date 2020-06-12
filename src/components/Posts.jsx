@@ -2,7 +2,7 @@ import AddPost from './AddPost';
 import Post from './Post';
 import React from 'react';
 
-const Posts = ({ posts }) => {
+const Posts = ({ posts, loading }) => {
 	return (
 		<section className="Posts">
 			<AddPost />

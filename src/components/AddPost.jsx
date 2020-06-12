@@ -26,7 +26,7 @@ const AddPost = () => {
 			},
 			favorites: 0,
 			comments: 0,
-			createdAt: new Date(),
+			createdAt: Date.now(),
 		};
 
 		firestore.collection('posts').add(post);

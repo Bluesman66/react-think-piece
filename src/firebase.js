@@ -20,13 +20,13 @@ window.firebase = firebase;
 export const createUserProfileDocument = async (user, additionalData) => {
 	if (!user) return;
 	// Get a reference to the place in the database where a user profile might be
-	const userRef = firestore.doc(`users/${user.id}`);
+	const userRef = firestore.doc(`users/${user.uid}`);
 	// Go and fetch the document from that location
 	const snapshot = await userRef.get();
 
 	if (!snapshot.exists) {
 		const { displayName, email, photoURL } = user;
-		const createdAt = new Date();
+		const createdAt = Date.now();
 		try {
 			await userRef.set({
 				displayName,
@@ -46,10 +46,10 @@ export const createUserProfileDocument = async (user, additionalData) => {
 export const getUserDocument = async (uid) => {
 	if (!uid) return;
 	try {
-		const userDocument = await firestore.collections('users').doc('uid').get();
+		const userDocument = await firestore.collection('users').doc(uid).get();
 		return { uid, ...userDocument.data() };
 	} catch (error) {
-		console.error(error);
+		console.error('Error getting user document: ', error);
 	}
 };
 
