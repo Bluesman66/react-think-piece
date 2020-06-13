@@ -7,6 +7,7 @@ export const PostsContext = createContext();
 
 const PostsProvider = ({ children }) => {
 	const [posts, setPosts] = useState([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const unsubscribeFromFirestore = firestore
@@ -14,6 +15,7 @@ const PostsProvider = ({ children }) => {
 			.onSnapshot((snapshot) => {
 				const posts = snapshot.docs.map(collectIdsAndDocs);
 				setPosts(posts);
+				setLoading(false);
 			});
 		return () => {
 			unsubscribeFromFirestore();
@@ -21,7 +23,9 @@ const PostsProvider = ({ children }) => {
 	}, []);
 
 	return (
-		<PostsContext.Provider value={posts}>{children}</PostsContext.Provider>
+		<PostsContext.Provider value={{ posts, loading }}>
+			{children}
+		</PostsContext.Provider>
 	);
 };
 

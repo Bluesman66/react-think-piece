@@ -4,8 +4,8 @@ import AddPost from './AddPost';
 import Post from './Post';
 import { PostsContext } from '../providers';
 
-const Posts = ({ loading }) => {
-	const posts = useContext(PostsContext);
+const Posts = () => {
+	const { posts, loading } = useContext(PostsContext);
 	if (loading) return null;
 
 	return (

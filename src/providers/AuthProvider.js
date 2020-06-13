@@ -5,18 +5,24 @@ export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
 			const user = await createUserProfileDocument(userAuth);
 			setUser(user);
+			setLoading(false);
 		});
 		return () => {
 			unsubscribeFromAuth();
 		};
 	}, []);
 
-	return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+	return (
+		<AuthContext.Provider value={{ user, loading }}>
+			{children}
+		</AuthContext.Provider>
+	);
 };
 
 export default AuthProvider;
